@@ -8,6 +8,7 @@ set(CPPDB_PATCH 1)
 set(CPPDB_VERSION ${CPPDB_MAJOR}.${CPPDB_MINOR}.${CPPDB_PATCH})
 set(CPPDB_SOVERSION ${CPPDB_MAJOR})
 
+set(AL ${CMAKE_SOURCE_DIR}/../build/assembly_line)
 add_definitions(
 		-DCPPDB_MAJOR=${CPPDB_MAJOR}
 		-DCPPDB_MINOR=${CPPDB_MINOR}
@@ -156,8 +157,8 @@ if(NOT DISABLE_ODBC)
 endif()
 
 if(NOT DISABLE_SQLITE)
-	find_library(SQLITE3_LIB sqlite3)
-	find_path(SQLITE3_PATH sqlite3.h)
+	find_library(SQLITE3_LIB sqlite3 PATHS ${AL}/lib)
+	find_path(SQLITE3_PATH sqlite3.h PATHS ${AL}/include)
 	if(SQLITE3_LIB AND SQLITE3_PATH)
 		include_directories(${SQLITE3_PATH})
 		if(SQLITE_BACKEND_INTERNAL)
@@ -231,7 +232,7 @@ set(CPPDB_SRC
 	${INTERNAL_SOURCES}
 	)
 
-add_library(cppdb SHARED ${CPPDB_SRC})
+add_library(cppdb STATIC ${CPPDB_SRC})
 add_library(cppdb-static STATIC ${CPPDB_SRC})
 set_target_properties(cppdb PROPERTIES COMPILE_DEFINITIONS CPPDB_EXPORTS)
 
